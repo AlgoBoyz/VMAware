@@ -729,3 +729,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "All checks passed"
+  windows-compilation:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vmaware-windows
+          path: build/Release/vmaware.exe
