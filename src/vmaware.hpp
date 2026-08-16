@@ -8514,6 +8514,7 @@ public:
                     constexpr u8 qemu_dbg_opregion[] = { 0x5B, 0x80, 0x44, 0x42, 0x47, 0x5F, 0x01, 0x0B, 0x02, 0x04, 0x01 };
                     if (find_pattern(reinterpret_cast<const char*>(qemu_dbg_opregion), sizeof(qemu_dbg_opregion))) {
                         debug("FIRMWARE: Detected QEMU Debug Port OperationRegion at I/O 0x0402");
+                        printf("HIT_L8517\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
 
@@ -8551,6 +8552,7 @@ public:
 
                         if (!is_acer_aspire) {
                             debug("FIRMWARE: Detected QEMU DBUG method and DBGB field definitions");
+                            printf("HIT_L8554\n"); fflush(stdout);
                             return core::add(brand_enum::QEMU);
                         }
                     }
@@ -8559,12 +8561,14 @@ public:
                     /* QEMU virtual DRAM Controller named "DRAC" with its corresponding System Board PNPID */
                     if (find_pattern("DRAC", 4) && find_pattern("PNP0C01", 7)) {
                         debug("FIRMWARE: Detected QEMU virtual DRAM controller (DRAC)");
+                        printf("HIT_L8562\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
 
                     /* QEMU System Management Interrupt Resources/Interface Reservation string or wildcard _UID and PNP0A06 device association */
                     if (find_pattern("SMI resources", 13) || find_pattern("SMI interface", 13)) {
                         debug("FIRMWARE: Detected QEMU SMI Resources reservation string");
+                        printf("HIT_L8568\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
                     else {
@@ -8594,6 +8598,7 @@ public:
                                     /* Check if the _UID value is a string (represented by 0x0D StringPrefix in AML) starting with "SM" */
                                     if (buffer[i + 5] == 0x0D && buffer[i + 6] == 'S' && buffer[i + 7] == 'M') {
                                         debug("FIRMWARE: Detected QEMU generic device containing SMI string unique identifier");
+                                        printf("HIT_L8597\n"); fflush(stdout);
                                         return core::add(brand_enum::QEMU);
                                     }
                                 }
@@ -8604,10 +8609,12 @@ public:
                     /* QEMU Hotplug Resource Description strings */
                     if (find_pattern("CPU Hotplug resources", 21)) {
                         debug("FIRMWARE: Detected QEMU CPU Hotplug resources string");
+                        printf("HIT_L8607\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
                     if (find_pattern("PCI Hotplug resources", 21)) {
                         debug("FIRMWARE: Detected QEMU PCI Hotplug resources string");
+                        printf("HIT_L8611\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
 
@@ -8643,6 +8650,7 @@ public:
 
                         if (prtp_size != 0 && prtp_size == prta_size) {
                             debug("FIRMWARE: Detected QEMU routing symmetry (PRTP and PRTA matching size ", (int)prtp_size, ")");
+                            printf("HIT_L8646\n"); fflush(stdout);
                             return core::add(brand_enum::QEMU);
                         }
                     }
@@ -8660,6 +8668,7 @@ public:
                                 for (size_t j = 3; j < 12 && i + j + 1 < buffer_len; ++j) {
                                     if (ptr[i + j] == 0x94 && ptr[i + j + 1] == 0x61) {
                                         debug("FIRMWARE: Detected QEMU HPET structural register-validation loop");
+                                        printf("HIT_L8663\n"); fflush(stdout);
                                         return core::add(brand_enum::QEMU);
                                     }
                                 }
@@ -8670,12 +8679,14 @@ public:
                     /* QEMU PIRQ Routing rotation names */
                     if (find_pattern("LNKE", 4) && find_pattern("LNKH", 4) && find_pattern("GSIE", 4) && find_pattern("GSIH", 4)) {
                         debug("FIRMWARE: Detected QEMU sequential PIRQ routing names (LNKE-H, GSIE-H)");
+                        printf("HIT_L8673\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
 
                     /* Motherboard resources mapped via PNP0A06 generic container on designated "GPER" virtual device */
                     if (find_pattern("GPER", 4) && find_pattern("PNP0A06", 7)) {
                         debug("FIRMWARE: Motherboard resources allocated via PNP0A06 generic container");
+                        printf("HIT_L8679\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
 
@@ -8683,6 +8694,7 @@ public:
                     constexpr u8 sata_addr_dummy[] = { 0x08, 0x5F, 0x41, 0x44, 0x52, 0x0C, 0x02, 0x00, 0x1F, 0x00 };
                     if (find_pattern("D0FA", 4) && find_pattern(reinterpret_cast<const char*>(sata_addr_dummy), sizeof(sata_addr_dummy))) {
                         debug("FIRMWARE: Detected QEMU dummy SATA controller named D0FA on Device 31, Function 2");
+                        printf("HIT_L8686\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
                 }
@@ -8750,10 +8762,12 @@ public:
                 if (memcmp(header.signature, "FACP", 4) == 0) {
                     if (header.length > buffer_len) {
                         debug("FIRMWARE: declared header length larger than fetched length (declared ", header.length, ", fetched ", buffer_len, ")");
+                        printf("HIT_L8753\n"); fflush(stdout);
                         return true;
                     }
                     if (buffer_len < sizeof(fadt_table)) {
                         debug("FIRMWARE: FACP buffer too small (len ", buffer_len, ")");
+                        printf("HIT_L8757\n"); fflush(stdout);
                         return true;
                     }
 
@@ -8762,6 +8776,7 @@ public:
 
                     if (fadt.p_lvl2_lat == 0x0FFF || fadt.p_lvl3_lat == 0x0FFF) {
                         debug("FIRMWARE: C2 and C3 latencies indicate VM");
+                        printf("HIT_L8765\n"); fflush(stdout);
                         return true;
                     }
                 }
@@ -8797,6 +8812,7 @@ public:
                                 /* QEMU / KVM maps the virtual IOAPIC to Bus 0xFF */
                                 if (scope_type == 0x03 && bus_num == 0xFF) {
                                     debug("FIRMWARE: DMAR IOAPIC mapped to invalid bus 0xFF (QEMU signature)");
+                                    printf("HIT_L8800\n"); fflush(stdout);
                                     return core::add(brand_enum::QEMU);
                                 }
 
@@ -8806,6 +8822,7 @@ public:
                                     const u8 func_num = buffer[scope_offset + 7];
                                     if (dev_num == 0x02 && func_num == 0x00) {
                                         debug("FIRMWARE: DMAR PCI Bridge on invalid Device 0x02 (QEMU root port signature)");
+                                        printf("HIT_L8809\n"); fflush(stdout);
                                         return core::add(brand_enum::QEMU);
                                     }
                                 }
@@ -8871,6 +8888,7 @@ public:
 
                     if (qemu_override_mask == 0x0F) {
                         debug("FIRMWARE: APIC table contains QEMU-specific Interrupt Source Overrides");
+                        printf("HIT_L8874\n"); fflush(stdout);
                         return core::add(brand_enum::QEMU);
                     }
                 }
@@ -8912,6 +8930,7 @@ public:
                 work_buffer.resize(sz);
                 if (GetSystemFirmwareTable(acpi_signature, dsdt_swapped, work_buffer.data(), sz) == sz) {
                     if (scan_buffer(work_buffer.data(), work_buffer.size(), true)) {
+                        printf("HIT_L8915\n"); fflush(stdout);
                         return true;
                     }
                 }
@@ -8935,6 +8954,7 @@ public:
         /* Scan every ACPI table */
         for (const auto table_id : tables) {
             if (fetch_and_scan(acpi_signature, table_id, true)) {
+                printf("HIT_L8938\n"); fflush(stdout);
                 return true;
             }
         }
@@ -8954,6 +8974,7 @@ public:
 
             for (const auto table_id : provider_tables) {
                 if (fetch_and_scan(prov, table_id, false)) {
+                    printf("HIT_L8957\n"); fflush(stdout);
                     return true;
                 }
             }
@@ -9041,6 +9062,7 @@ public:
             }
 
             if (scan_buffer(buffer.data(), file_size_u, true)) {
+                printf("HIT_L9044\n"); fflush(stdout);
                 return true;
             }
         }
