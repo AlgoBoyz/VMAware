@@ -8964,6 +8964,7 @@ public:
 
         for (DWORD prov : smb_providers) {
             const UINT e = EnumSystemFirmwareTables(prov, nullptr, 0);
+            printf("SMBPROV prov=%08X e=%u\n", (unsigned)prov, (unsigned)e);
             if (!e) continue;
             if (e % sizeof(DWORD) != 0) continue;
 
@@ -8973,6 +8974,7 @@ public:
             if (EnumSystemFirmwareTables(prov, provider_tables.data(), e) != e) continue;
 
             for (const auto table_id : provider_tables) {
+                printf("SMBCALL prov=%08X table=%08X\n", (unsigned)prov, (unsigned)table_id);
                 if (fetch_and_scan(prov, table_id, false)) {
                     printf("HIT_L8957\n"); fflush(stdout);
                     return true;
